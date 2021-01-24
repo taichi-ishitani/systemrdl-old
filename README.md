@@ -1,3 +1,7 @@
+![CI](https://github.com/taichi-ishitani/systemrdl/workflows/CI/badge.svg?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/2b1b675860b36aefca06/maintainability)](https://codeclimate.com/github/taichi-ishitani/systemrdl/maintainability)
+[![codecov](https://codecov.io/gh/taichi-ishitani/systemrdl/branch/master/graph/badge.svg?token=J8L9X2J26A)](https://codecov.io/gh/taichi-ishitani/systemrdl)
+
 # Systemrdl
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/systemrdl`. To experiment with that code, run `bin/console` for an interactive prompt.
