@@ -10,4 +10,14 @@ RSpec.configure do |config|
   end
 end
 
+if ENV['COVERAGE']
+  require 'simplecov'
+  SimpleCov.start
+end
+
+if ENV['COVERAGE'] && ENV['CI']
+  require 'codecov'
+  SimpleCov.formatter = SimpleCov::Formatter::Codecov
+end
+
 require 'systemrdl'
