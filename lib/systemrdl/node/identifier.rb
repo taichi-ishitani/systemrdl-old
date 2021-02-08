@@ -4,21 +4,16 @@ module SystemRDL
   module Node
     class Identifier
       def initialize(slice)
-        @slice = slice
+        @identifier = slice.str
+        @source = slice.line_cache
+        @position = slice.position
         non_escaped_identifier? && validate
       end
 
-      def to_s
-        @slice.str
-      end
+      attr_reader :identifier
+      attr_reader :position
 
-      def position
-        @slice.position
-      end
-
-      def identifier
-        to_s
-      end
+      alias_method :to_s, :identifier
 
       def non_escaped_identifier?
         !escaped_identifier?
@@ -54,12 +49,12 @@ module SystemRDL
       def validate
         KEYWORDS.any?(identifier) &&
           Parslet::Cause.format(
-            @slice.line_cache, @slice.position.bytepos,
+            @source, @position.bytepos,
             "keywords cannot be used for identifiers: #{identifier}"
           ).raise
         RESERVED_WORDS.any?(identifier) &&
           Parslet::Cause.format(
-            @slice.line_cache, @slice.position.bytepos,
+            @source, @position.bytepos,
             "reserved words cannot be used for identifiers: #{identifier}"
           ).raise
       end
