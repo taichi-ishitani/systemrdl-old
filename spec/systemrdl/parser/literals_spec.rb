@@ -8,6 +8,13 @@ RSpec.describe 'parser/literals' do
     end
   end
 
+  def number_literal(value, width: nil)
+    lambda do |result|
+      result.is_a?(SystemRDL::Node::NumberLiteral) &&
+        result.value == value && result.width == width
+    end
+  end
+
   def upcase_randomly(string)
     pos =
       (0...string.size)
@@ -35,6 +42,57 @@ RSpec.describe 'parser/literals' do
         expect(parser).not_to parse(value.upcase, trace: true)
         expect(parser).not_to parse(upcase_randomly(value), trace: true)
       end
+    end
+  end
+
+  describe 'number literal' do
+    let(:parser) do
+      SystemRDL::Parser.new(:number_literal)
+    end
+
+    specify 'simple decimal and hexadecimal should be parsed as number literals' do
+      expect(parser).to parse('0', trace: true).as(&number_literal(0))
+      expect(parser).to parse('40', trace: true).as(&number_literal(40))
+      expect(parser).to parse('0x45', trace: true).as(&number_literal(0x45))
+      expect(parser).to parse('0XAbCdEf', trace: true).as(&number_literal(0xabcdef))
+    end
+
+    specify 'verilog style binary, decimal and hexadecimal should be parsed as number literals' do
+      expect(parser).to parse("3'b101", trace: true).as(&number_literal(0b101, width: 3))
+      expect(parser).to parse("4'B1010", trace: true).as(&number_literal(0b1010, width: 4))
+      expect(parser).to parse("4'd0", trace: true).as(&number_literal(0, width: 4))
+      expect(parser).to parse("4'd1", trace: true).as(&number_literal(1, width: 4))
+      expect(parser).to parse("10'D123", trace: true).as(&number_literal(123, width: 10))
+      expect(parser).to parse("32'hdeadbeaf", trace: true).as(&number_literal(0xdeadbeaf, width: 32))
+      expect(parser).to parse("32'HDEADBEAF", trace: true).as(&number_literal(0xdeadbeaf, width: 32))
+    end
+
+    specify 'width of verilog style number should be specified' do
+      expect(parser).not_to parse("'d1", trace: true)
+      expect(parser).not_to parse("'b101", trace: true)
+      expect(parser).not_to parse("'hdeadbeaf", trace: true)
+    end
+
+    specify 'multiple underscores can be inserted at any position except for width part and first position' do
+      expect(parser).to parse('1_234_567').as(&number_literal(1_234_567))
+      expect(parser).to parse('0xdead_beaf').as(&number_literal(0xdeadbeaf))
+      expect(parser).to parse("3'b1_0_1").as(&number_literal(0b101, width: 3))
+      expect(parser).to parse("10'd1_23").as(&number_literal(123, width: 10))
+      expect(parser).to parse("32'hde_ad_be_af", trace: true).as(&number_literal(0xdeadbeaf, width: 32))
+
+      expect(parser).not_to parse('_123', trace: true)
+      expect(parser).not_to parse('0x_abcd', trace: true)
+      expect(parser).not_to parse("3'b_101", trace: true)
+      expect(parser).not_to parse("1_0'b0000000000", trace: true)
+      expect(parser).not_to parse("10'd_123", trace: true)
+      expect(parser).not_to parse("1_0'd123", trace: true)
+      expect(parser).not_to parse("32'h_deadbeaf", trace: true)
+      expect(parser).not_to parse("3_2'hdeadbeaf", trace: true)
+    end
+
+    specify 'decimal numbers greater than or eual to 10 should not start with 0' do
+      expect(parser).not_to parse('010', trace: true)
+      expect(parser).not_to parse("10'd0123", trace: true)
     end
   end
 
