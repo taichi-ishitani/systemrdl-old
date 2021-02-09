@@ -33,6 +33,10 @@ module SystemRDL
       end
     end
 
+    #
+    # Simple Literals
+    #
+
     simple_literal(:boolean, ['true', 'false']) do |value|
       { 'true' => true, 'false' => false }[value.str]
     end
@@ -61,5 +65,21 @@ module SystemRDL
       :precedencetype,
       ['hw', 'sw']
     )
+
+    #
+    # String Literal
+    #
+
+    parse_rule(:string_literal) do
+      (
+        str('"') >>
+        (str('\\"') | str('"').absent? >> any).repeat >>
+        str('"')
+      ).as(:string_literal)
+    end
+
+    literal_transform_rule(:string_literal, :string) do |value|
+      value.str.slice(1...-1).gsub('\\"', '"')
+    end
   end
 end

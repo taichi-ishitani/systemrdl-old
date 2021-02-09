@@ -38,6 +38,46 @@ RSpec.describe 'parser/literals' do
     end
   end
 
+  describe 'string literal' do
+    let(:parser) do
+      SystemRDL::Parser.new(:string_literal)
+    end
+
+    it 'should be parsed by :string_literal parser' do
+      [
+        'This is a string',
+        "This is also\na string!",
+        ''
+      ].each do |string|
+        expect(parser).to parse("\"#{string}\"", trace: true)
+          .as(&literal(:string, string))
+      end
+    end
+
+    specify 'double quote can be escaped by using \\' do
+      expect(parser).to parse('"\\"\\"\\""', trace: true)
+        .as(&literal(:string, '"""'))
+      expect(parser).to parse('"This third string contains a \\"double quote\\""', trace: true)
+        .as(&literal(:string, 'This third string contains a "double quote"'))
+    end
+
+    it 'can include any characters encoded using UTF-8' do
+      [
+        'これは文字列です',
+        'ＴＨＩＳ　ＩＳ　Ａ　ＳＴＲＩＮＧ'
+      ].each do |string|
+        expect(parser).to parse("\"#{string}\"", trace: true)
+          .as(&literal(:string, string))
+      end
+    end
+
+    it 'should be enclosed by double quotes' do
+      expect(parser).not_to parse("'This is a string'", trace: true)
+      expect(parser).not_to parse('"This is a string', trace: true)
+      expect(parser).not_to parse('"This is a string\'', trace: true)
+    end
+  end
+
   describe 'accesstype literal' do
     let(:parser) do
       SystemRDL::Parser.new(:accesstype_literal)
