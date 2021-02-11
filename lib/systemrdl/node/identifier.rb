@@ -15,6 +15,14 @@ module SystemRDL
 
       alias_method :to_s, :identifier
 
+      def ==(other)
+        case other
+        when Identifier then identifier == other.identifier
+        when String then identifier == other
+        else false
+        end
+      end
+
       def non_escaped_identifier?
         !escaped_identifier?
       end

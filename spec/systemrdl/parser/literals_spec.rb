@@ -15,6 +15,13 @@ RSpec.describe 'parser/literals' do
     end
   end
 
+  def enumerator_literal(type_name, mnemonic_name)
+    lambda do |result|
+      result.is_a?(SystemRDL::Node::EnumeratorLiteral) &&
+        result.type_name == type_name && result.mnemonic_name == mnemonic_name
+    end
+  end
+
   def upcase_randomly(string)
     pos =
       (0...string.size)
@@ -133,6 +140,29 @@ RSpec.describe 'parser/literals' do
       expect(parser).not_to parse("'This is a string'", trace: true)
       expect(parser).not_to parse('"This is a string', trace: true)
       expect(parser).not_to parse('"This is a string\'', trace: true)
+    end
+  end
+
+  describe 'enumerator literal' do
+    let(:parser) do
+      SystemRDL::Parser.new(:enumerator_literal)
+    end
+
+    it 'should be parsed by :enumerator_literal parser' do
+      expect(parser).to parse('MyEnumeration::MyValue', trace: true)
+        .as(&enumerator_literal('MyEnumeration', 'MyValue'))
+    end
+
+    specify 'type name should be specified' do
+      expect(parser).not_to parse('::MyValue', trace: true)
+    end
+
+    specify 'mnemonic name should be specified' do
+      expect(parser).not_to parse('MyEnumeration::', trace: true)
+    end
+
+    specify 'separator between type name and mnemonic name should be a couple of colons' do
+      expect(parser).not_to parse('MyEnumeration:MyValue', trace: true)
     end
   end
 

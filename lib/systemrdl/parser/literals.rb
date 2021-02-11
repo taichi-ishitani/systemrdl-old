@@ -174,5 +174,22 @@ module SystemRDL
     parse_rule(:number_literal) do
       simple_number | verilog_sytle_number
     end
+
+    #
+    # Enumerator literal
+    #
+
+    parse_rule(:enumerator_literal) do
+      (id.as(:type_name) >> str('::') >> id.as(:mnemonic_name))
+        .as(:enumerator_literal)
+    end
+
+    transform_rule(
+      enumerator_literal: {
+        type_name: simple(:type_name), mnemonic_name: simple(:mnemonic_name)
+      }
+    ) do
+      Node::EnumeratorLiteral.new(type_name, mnemonic_name)
+    end
   end
 end
