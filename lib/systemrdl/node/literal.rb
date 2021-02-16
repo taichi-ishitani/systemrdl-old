@@ -12,6 +12,13 @@ module SystemRDL
       attr_reader :type
       attr_reader :value
       attr_reader :position
+
+      def ==(other)
+        case other
+        when Literal then type == other.type && value == other.value
+        else value == other
+        end
+      end
     end
   end
 end

@@ -3,11 +3,11 @@
 module SystemRDL
   module Node
     class Identifier
-      def initialize(slice)
+      def initialize(slice, keyword: false)
         @identifier = slice.str
         @source = slice.line_cache
         @position = slice.position
-        non_escaped_identifier? && validate
+        check_keyword_reserved_word(keyword)
       end
 
       attr_reader :identifier
@@ -54,7 +54,9 @@ module SystemRDL
         'shortint', 'shortreal', 'signed', 'with', 'within'
       ].freeze
 
-      def validate
+      def check_keyword_reserved_word(keyword)
+        (keyword || escaped_identifier?) && return
+
         KEYWORDS.any?(identifier) &&
           Parslet::Cause.format(
             @source, @position.bytepos,

@@ -1,27 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe 'parser/literals' do
-  def literal(type, value)
-    lambda do |result|
-      result.is_a?(SystemRDL::Node::Literal) &&
-        result.type == type && result.value == value
-    end
-  end
-
-  def number_literal(value, width: nil)
-    lambda do |result|
-      result.is_a?(SystemRDL::Node::NumberLiteral) &&
-        result.value == value && result.width == width
-    end
-  end
-
-  def enumerator_literal(type_name, mnemonic_name)
-    lambda do |result|
-      result.is_a?(SystemRDL::Node::EnumeratorLiteral) &&
-        result.type_name == type_name && result.mnemonic_name == mnemonic_name
-    end
-  end
-
   def upcase_randomly(string)
     pos =
       (0...string.size)
@@ -36,10 +15,10 @@ RSpec.describe 'parser/literals' do
 
   describe 'boolean literal' do
     let(:parser) do
-      SystemRDL::Parser.new(:boolean_literal)
+      SystemRDL::Parser.new(:simple_literal)
     end
 
-    it 'should be parsed by :boolean_literal parser' do
+    it 'should be parsed by :simple_literal parser' do
       expect(parser).to parse('true', trace: true).as(&literal(:boolean, true))
       expect(parser).to parse('false', trace: true).as(&literal(:boolean, false))
     end
@@ -168,14 +147,14 @@ RSpec.describe 'parser/literals' do
 
   describe 'accesstype literal' do
     let(:parser) do
-      SystemRDL::Parser.new(:accesstype_literal)
+      SystemRDL::Parser.new(:simple_literal)
     end
 
     let(:accesstypes) do
       ['na', 'rw', 'wr', 'r', 'w', 'rw1', 'w1']
     end
 
-    it 'should be parsed by :access_type parser' do
+    it 'should be parsed by :simple_literal parser' do
       accesstypes.each do |accesstype|
         expect(parser).to parse(accesstype, trace: true)
           .as(&literal(:accesstype, accesstype.to_sym))
@@ -192,14 +171,14 @@ RSpec.describe 'parser/literals' do
 
   describe 'onreadtype literal' do
     let(:parser) do
-      SystemRDL::Parser.new(:onreadtype_literal)
+      SystemRDL::Parser.new(:simple_literal)
     end
 
     let(:onreadtypes) do
       ['rclr', 'rset', 'ruser']
     end
 
-    it 'should be parsed by :onreadtype_literal parser' do
+    it 'should be parsed by :simple_literal parser' do
       onreadtypes.each do |onreadtype|
         expect(parser).to parse(onreadtype, trace: true)
           .as(&literal(:onreadtype, onreadtype.to_sym))
@@ -216,14 +195,14 @@ RSpec.describe 'parser/literals' do
 
   describe 'onwritetype literal' do
     let(:parser) do
-      SystemRDL::Parser.new(:onwritetype_literal)
+      SystemRDL::Parser.new(:simple_literal)
     end
 
     let(:onwritetypes) do
       ['woset', 'woclr', 'wot', 'wzs', 'wzc', 'wzt', 'wclr', 'wset', 'wuser']
     end
 
-    it 'should be parsed by :onwritetype_literal parser' do
+    it 'should be parsed by :simple_literal parser' do
       onwritetypes.each do |onwritetype|
         expect(parser).to parse(onwritetype, trace: true)
           .as(&literal(:onwritetype, onwritetype.to_sym))
@@ -240,14 +219,14 @@ RSpec.describe 'parser/literals' do
 
   describe 'addressingtype literal' do
     let(:parser) do
-      SystemRDL::Parser.new(:addressingtype_literal)
+      SystemRDL::Parser.new(:simple_literal)
     end
 
     let(:addressingtypes) do
       ['compact', 'regalign', 'fullalign']
     end
 
-    it 'should be parsed by :addressingtype_literal parser' do
+    it 'should be parsed by :simple_literal parser' do
       addressingtypes.each do |addressingtype|
         expect(parser).to parse(addressingtype, trace: true)
           .as(&literal(:addressingtype, addressingtype.to_sym))
@@ -264,14 +243,14 @@ RSpec.describe 'parser/literals' do
 
   describe 'precedencetype literal' do
     let(:parser) do
-      SystemRDL::Parser.new(:precedencetype_literal)
+      SystemRDL::Parser.new(:simple_literal)
     end
 
     let(:precedencetypes) do
       ['hw', 'sw']
     end
 
-    it 'should be parsed by :precedencetype_literal parser' do
+    it 'should be parsed by :simple_literal parser' do
       precedencetypes.each do |precedencetype|
         expect(parser).to parse(precedencetype, trace: true)
           .as(&literal(:precedencetype, precedencetype.to_sym))

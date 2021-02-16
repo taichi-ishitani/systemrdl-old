@@ -38,13 +38,6 @@ RSpec.describe 'parser/identifiers' do
     ]
   end
 
-  def identifier(id)
-    lambda do |result|
-      result.is_a?(SystemRDL::Node::Identifier) &&
-        result.identifier == id
-    end
-  end
-
   describe 'non escaped identifiers' do
     it 'should be parsed by :id parser' do
       [
