@@ -45,50 +45,6 @@ module SystemRDL
       operand
     end
 
-    parse_rule(:power_op) do
-      str('**')
-    end
-
-    parse_rule(:mul_op) do
-      match('[*/%]')
-    end
-
-    parse_rule(:add_op) do
-      match('[+-]')
-    end
-
-    parse_rule(:shift_op) do
-      str('>>') | str('<<')
-    end
-
-    parse_rule(:relational_op) do
-      str('<=') |  str('<') | str('>=') | str('>')
-    end
-
-    parse_rule(:eq_op) do
-      str('==') | str('!=')
-    end
-
-    parse_rule(:bit_and_op) do
-      str('&')
-    end
-
-    parse_rule(:xor_op) do
-      str('~^') | str('^~') | str('^')
-    end
-
-    parse_rule(:bit_or_op) do
-      str('|')
-    end
-
-    parse_rule(:logic_and_op) do
-      str('&&')
-    end
-
-    parse_rule('logic_or_op') do
-      str('||')
-    end
-
     BINARY_OPERATORS = [
       ['**', 11],
       ['*', 10], ['/', 10], ['%', 10],
