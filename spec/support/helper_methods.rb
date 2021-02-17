@@ -29,5 +29,19 @@ module SystemRDL
           result.type_name == type_name && result.mnemonic_name == mnemonic_name
       end
     end
+
+    def concatenation(expressions)
+      lambda do |result|
+        result.is_a?(SystemRDL::Node::Concatenation) &&
+          result.expressions == expressions
+      end
+    end
+
+    def multiple_concatenation(multiplier, expressions)
+      lambda do |result|
+        result.is_a?(SystemRDL::Node::MultipleConcatenation) &&
+          result.multiplier == multiplier && result.concatenation == expressions
+      end
+    end
   end
 end

@@ -108,8 +108,17 @@ RSpec.describe 'parser/expressions' do
     end
 
     specify "'this' keyword should be treated as a constant expression" do
-      expect(parser).to parse('this', trace: true)
-        .as(&identifier('this'))
+      expect(parser).to parse('this', trace: true).as(&identifier('this'))
+    end
+
+    specify 'constant concatenation should be treated as a constant expression' do
+      expect(parser).to parse('{1}', trace: true).as(&concatenation([1]))
+      expect(parser).to parse('{1,{2,{3}}}', trace: true).as(&concatenation([1, [2, [3]]]))
+    end
+
+    specify 'constant multiple concatenation should be treated as a constant expression' do
+      expect(parser).to parse('{1{2}}', trace: true).as(&multiple_concatenation(1, [2]))
+      expect(parser).to parse('{1{2,{3}}}', trace: true).as(&multiple_concatenation(1, [2, [3]]))
     end
   end
 
