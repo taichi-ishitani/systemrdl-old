@@ -17,12 +17,12 @@ module SystemRDL
       Node::Identifier.new(this_keyword, keyword: true)
     end
 
-    parse_rule(:expression_with_arenthesis) do
+    parse_rule(:expression_with_parenthesis) do
       str('(').ignore >> constant_expression >> str(')').ignore
     end
 
     parse_rule(:constant_pripary) do
-      constant_literal | expression_with_arenthesis
+      constant_literal | expression_with_parenthesis
     end
 
     parse_rule(:unary_op) do
