@@ -157,5 +157,34 @@ module SystemRDL
     ) do
       Node::EnumeratorLiteral.new(type_name, mnemonic_name)
     end
+
+    #
+    # Array literal
+    #
+
+    parse_rule(:array_literal) do
+      expression = constant_expression
+      (
+        str("'{").as(:brace) >>
+        (expression >> (str(',') >> expression).repeat).as(:expressions) >>
+        str('}').ignore
+      ).as(:array_literal)
+    end
+
+    transform_rule(
+      array_literal: {
+        brace: simple(:brace), expressions: simple(:expression)
+      }
+    ) do
+      Node::ArrayLiteral.new([expression], brace.position)
+    end
+
+    transform_rule(
+      array_literal: {
+        brace: simple(:brace), expressions: sequence(:expressions)
+      }
+    ) do
+      Node::ArrayLiteral.new(expressions, brace.position)
+    end
   end
 end

@@ -24,7 +24,8 @@ module SystemRDL
     parse_rule(:constant_pripary) do
       [
         constant_literal, expression_with_parenthesis,
-        constant_concatenation, constant_multiple_concatenation
+        constant_concatenation, constant_multiple_concatenation,
+        array_literal
       ].inject(:|)
     end
 

@@ -264,4 +264,19 @@ RSpec.describe 'parser/literals' do
       end
     end
   end
+
+  describe 'array literal' do
+    let(:parser) do
+      SystemRDL::Parser.new(:array_literal)
+    end
+
+    it 'should be parsed by :array_literal parser' do
+      expect(parser).to parse("'{1}", trace: true).as(&array_literal([1]))
+      expect(parser).to parse("'{1,2,3}", trace: true).as(&array_literal([1, 2, 3]))
+    end
+
+    specify 'empty array literal is not allowed' do
+      expect(parser).not_to parse("'{}", trace: true)
+    end
+  end
 end

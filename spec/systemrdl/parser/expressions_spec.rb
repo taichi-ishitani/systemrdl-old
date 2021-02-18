@@ -120,6 +120,11 @@ RSpec.describe 'parser/expressions' do
       expect(parser).to parse('{1{2}}', trace: true).as(&multiple_concatenation(1, [2]))
       expect(parser).to parse('{1{2,{3}}}', trace: true).as(&multiple_concatenation(1, [2, [3]]))
     end
+
+    specify 'an array literal should be treated as a constant expression' do
+      expect(parser).to parse("'{1}", trace: true).as(&array_literal([1]))
+      expect(parser).to parse("'{1,'{2,'{3}}}", trace: true).as(&array_literal([1, [2, [3]]]))
+    end
   end
 
   describe 'unary operations' do

@@ -8,14 +8,22 @@ module SystemRDL
         str('{').as(:brace) >>
         (expression >> (str(',').ignore >> expression).repeat).as(:expressions) >>
         str('}').ignore
-      )
+      ).as(:constant_concatenation)
     end
 
-    transform_rule(brace: simple(:brace), expressions: simple(:expression)) do
+    transform_rule(
+      constant_concatenation: {
+        brace: simple(:brace), expressions: simple(:expression)
+      }
+    ) do
       Node::Concatenation.new([expression], brace.position)
     end
 
-    transform_rule(brace: simple(:brace), expressions: sequence(:expressions)) do
+    transform_rule(
+      constant_concatenation: {
+        brace: simple(:brace), expressions: sequence(:expressions)
+      }
+    ) do
       Node::Concatenation.new(expressions, brace.position)
     end
 
@@ -26,12 +34,14 @@ module SystemRDL
         str('{').as(:brace) >>
         expression.as(:multiplier) >> concatenation.as(:concatenation) >>
         str('}').ignore
-      )
+      ).as(:constant_multiple_concatenation)
     end
 
     transform_rule(
-      brace: simple(:brace),
-      multiplier: simple(:multiplier), concatenation: simple(:concatenation)
+      constant_multiple_concatenation: {
+        brace: simple(:brace), multiplier: simple(:multiplier),
+        concatenation: simple(:concatenation)
+      }
     ) do
       Node::MultipleConcatenation.new(multiplier, concatenation, brace.position)
     end

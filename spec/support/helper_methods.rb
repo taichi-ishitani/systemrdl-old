@@ -30,10 +30,15 @@ module SystemRDL
       end
     end
 
+    def array_literal(expressions)
+      lambda do |result|
+        result.is_a?(SystemRDL::Node::ArrayLiteral) && result == expressions
+      end
+    end
+
     def concatenation(expressions)
       lambda do |result|
-        result.is_a?(SystemRDL::Node::Concatenation) &&
-          result.expressions == expressions
+        result.is_a?(SystemRDL::Node::Concatenation) && result == expressions
       end
     end
 
