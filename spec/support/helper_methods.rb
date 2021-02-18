@@ -30,6 +30,12 @@ module SystemRDL
       end
     end
 
+    def struct_literal(type_name_and_members)
+      lambda do |result|
+        result.is_a?(SystemRDL::Node::StructLiteral) && result == type_name_and_members
+      end
+    end
+
     def array_literal(expressions)
       lambda do |result|
         result.is_a?(SystemRDL::Node::ArrayLiteral) && result == expressions

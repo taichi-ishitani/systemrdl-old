@@ -159,6 +159,51 @@ module SystemRDL
     end
 
     #
+    # Struct literal
+    #
+
+    parse_rule(:struct_literal_element) do
+      id.as(:member_name) >> str(':') >> constant_expression.as(:member_value)
+    end
+
+    transform_rule(member_name: simple(:name), member_value: simple(:value)) do
+      Node::StructLiteralMember.new(name, value)
+    end
+
+    parse_rule(:struct_literal) do
+      element = struct_literal_element
+      (
+        id.as(:type_name) >> str("'{") >>
+        (element >> (str(',') >> element).repeat).as(:members).maybe >>
+        str('}')
+      ).as(:struct_literal)
+    end
+
+    transform_rule(
+      struct_literal: {
+        type_name: simple(:type_name)
+      }
+    ) do
+      Node::StructLiteral.new(type_name, [])
+    end
+
+    transform_rule(
+      struct_literal: {
+        type_name: simple(:type_name), members: simple(:member)
+      }
+    ) do
+      Node::StructLiteral.new(type_name, [member])
+    end
+
+    transform_rule(
+      struct_literal: {
+        type_name: simple(:type_name), members: sequence(:member)
+      }
+    ) do
+      Node::StructLiteral.new(type_name, member)
+    end
+
+    #
     # Array literal
     #
 

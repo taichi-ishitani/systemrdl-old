@@ -265,6 +265,23 @@ RSpec.describe 'parser/literals' do
     end
   end
 
+  describe 'struct literal' do
+    let(:parser) do
+      SystemRDL::Parser.new(:struct_literal)
+    end
+
+    it 'should be parsed by :struct_literal parser' do
+      expect(parser).to parse("fizz'{foo:1}", trace: true)
+        .as(&struct_literal([:fizz, { foo: 1 }]))
+      expect(parser).to parse("fizz'{foo:1,bar:2,baz:3}", trace: true)
+        .as(&struct_literal([:fizz, { foo: 1, bar: 2, baz: 3 }]))
+    end
+
+    specify 'empty struct literals are allowed' do
+      expect(parser).to parse("fizz'{}", trace: true).as(&struct_literal([:fizz, {}]))
+    end
+  end
+
   describe 'array literal' do
     let(:parser) do
       SystemRDL::Parser.new(:array_literal)
@@ -275,7 +292,7 @@ RSpec.describe 'parser/literals' do
       expect(parser).to parse("'{1,2,3}", trace: true).as(&array_literal([1, 2, 3]))
     end
 
-    specify 'empty array literal is not allowed' do
+    specify 'empty array literals are not allowed' do
       expect(parser).not_to parse("'{}", trace: true)
     end
   end

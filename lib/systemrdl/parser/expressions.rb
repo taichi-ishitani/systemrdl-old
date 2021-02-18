@@ -25,7 +25,7 @@ module SystemRDL
       [
         constant_literal, expression_with_parenthesis,
         constant_concatenation, constant_multiple_concatenation,
-        array_literal
+        struct_literal, array_literal
       ].inject(:|)
     end
 
