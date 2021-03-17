@@ -24,8 +24,8 @@ module SystemRDL
 
       private
 
-      def match?(oparator, left, right)
-        self.operator == oparator && self.left == left && self.right == right
+      def match?(operator, left, right)
+        self.operator == operator && self.left == left && self.right == right
       end
     end
   end
