@@ -2,14 +2,13 @@
 
 module SystemRDL
   module Node
-    class Concatenation
+    class Concatenation < Base
       def initialize(expressions, position)
         @expressions = expressions
-        @position = position
+        super(position)
       end
 
       attr_reader :expressions
-      attr_reader :position
 
       def ==(other)
         case other

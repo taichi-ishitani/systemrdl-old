@@ -2,20 +2,19 @@
 
 module SystemRDL
   module Node
-    class TernaryOperation
+    class TernaryOperation < Base
       def initialize(operator, first, second, third)
         @operator = operator.to_sym
         @first = first
         @second = second
         @third = third
-        @position = operator.position
+        super(operator.position)
       end
 
       attr_reader :operator
       attr_reader :first
       attr_reader :second
       attr_reader :third
-      attr_reader :position
     end
   end
 end

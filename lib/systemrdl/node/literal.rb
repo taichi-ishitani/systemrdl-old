@@ -2,16 +2,15 @@
 
 module SystemRDL
   module Node
-    class Literal
+    class Literal < Base
       def initialize(type, value, position)
         @type = type
         @value = value
-        @position = position
+        super(position)
       end
 
       attr_reader :type
       attr_reader :value
-      attr_reader :position
 
       def ==(other)
         case other

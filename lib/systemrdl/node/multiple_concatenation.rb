@@ -2,16 +2,15 @@
 
 module SystemRDL
   module Node
-    class MultipleConcatenation
+    class MultipleConcatenation < Base
       def initialize(multiplier, concatenation, position)
         @multiplier = multiplier
         @concatenation = concatenation
-        @position = position
+        super(position)
       end
 
       attr_reader :multiplier
       attr_reader :concatenation
-      attr_reader :position
     end
   end
 end

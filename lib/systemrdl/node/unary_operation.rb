@@ -2,16 +2,15 @@
 
 module SystemRDL
   module Node
-    class UnaryOperation
+    class UnaryOperation < Base
       def initialize(operator, operand)
         @operator = operator.to_sym
         @operand = operand
-        @position = operator.position
+        super(operand.position)
       end
 
       attr_reader :operator
       attr_reader :operand
-      attr_reader :position
     end
   end
 end

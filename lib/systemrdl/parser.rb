@@ -19,6 +19,10 @@ module SystemRDL
         parser.class_eval { rule(name, &body) }
       end
 
+      def parse_helper(name, &body)
+        parser.class_eval { private define_method(name, &body) }
+      end
+
       def transform_rule(expression, &body)
         transformer.class_eval { rule(expression, &body) }
       end

@@ -2,16 +2,15 @@
 
 module SystemRDL
   module Node
-    class Identifier
+    class Identifier < Base
       def initialize(slice, keyword: false)
         @identifier = slice.str
         @source = slice.line_cache
-        @position = slice.position
+        super(slice.position)
         check_keyword_reserved_word(keyword)
       end
 
       attr_reader :identifier
-      attr_reader :position
 
       alias_method :to_s, :identifier
 
@@ -19,6 +18,7 @@ module SystemRDL
         case other
         when Identifier then identifier == other.identifier
         when String then identifier == other
+        when Symbol then identifier.to_sym == other
         else false
         end
       end

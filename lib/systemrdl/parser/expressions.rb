@@ -21,12 +21,50 @@ module SystemRDL
       str('(').ignore >> constant_expression >> str(')').ignore
     end
 
-    parse_rule(:constant_pripary) do
+    parse_rule(:type_based_constant_cast) do
+      casting_type = (simple_type | boolean_type).as(:casting_type)
+      expression = expression_with_parenthesis.as(:expression)
+      casting_type >> str("'").ignore >> expression
+    end
+
+    parse_rule(:casting_type_width) do
       [
         constant_literal, expression_with_parenthesis,
         constant_concatenation, constant_multiple_concatenation,
-        struct_literal, array_literal
+        struct_literal, array_literal, type_based_constant_cast
       ].inject(:|)
+    end
+
+    parse_rule(:width_based_constant_cast) do
+      casting_type = casting_type_width.as(:casting_type)
+      expression = expression_with_parenthesis.as(:expression)
+      (
+        casting_type >> (str("'").ignore >> expression).repeat
+      ).as(:width_based_constant_cast)
+    end
+
+    transform_rule(casting_type: simple(:casting_type)) do
+      casting_type
+    end
+
+    transform_rule(
+      casting_type: simple(:casting_type), expression: simple(:expression)
+    ) do
+      Node::Cast.new(casting_type, expression)
+    end
+
+    transform_rule(width_based_constant_cast: subtree(:cast)) do
+      if cast.is_a?(Array)
+        cast.inject do |casting_type, expression|
+          Node::Cast.new(casting_type, expression[:expression])
+        end
+      else
+        cast
+      end
+    end
+
+    parse_rule(:constant_primary) do
+      width_based_constant_cast
     end
 
     parse_rule(:unary_op) do
@@ -36,7 +74,7 @@ module SystemRDL
     end
 
     parse_rule(:unary_operation) do
-      unary_op.as(:operator).maybe >> constant_pripary.as(:operand)
+      unary_op.as(:operator).maybe >> constant_primary.as(:operand)
     end
 
     transform_rule(

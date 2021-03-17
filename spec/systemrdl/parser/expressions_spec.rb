@@ -268,4 +268,23 @@ RSpec.describe 'parser/expressions' do
     expect(parser).to parse('1||(2?3:4)', trace: true)
       .as(&constant_expression([:binary, :'||', 1, [:ternary, :'?', 2, 3, 4]]))
   end
+
+  describe 'constant cast' do
+    it 'should be parsed by :constant_expression parser' do
+      expect(parser).to parse('bit\'(1+2)')
+        .as(&constant_cast(:bit, [:'+', 1, 2]))
+      expect(parser).to parse('longint\'(1+2)')
+        .as(&constant_cast(:longint, [:'+', 1, 2]))
+      expect(parser).to parse('17\'(1+2)')
+        .as(&constant_cast(17, [:'+', 1, 2]))
+      expect(parser).to parse('(10+7)\'(1+2)')
+        .as(&constant_cast([:'+', 10, 7], [:'+', 1, 2]))
+      expect(parser).to parse('17\'(1+2)\'(1+2)')
+        .as(&constant_cast([17, [:'+', 1, 2]], [:'+', 1, 2]))
+      expect(parser).to parse('longint\'(1+2)\'(1+2)')
+        .as(&constant_cast([:longint, [:'+', 1, 2]], [:'+', 1, 2]))
+      expect(parser).to parse('boolean\'(1+2)')
+        .as(&constant_cast(:boolean, [:'+', 1, 2]))
+    end
+  end
 end

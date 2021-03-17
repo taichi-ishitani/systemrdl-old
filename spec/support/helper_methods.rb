@@ -54,5 +54,12 @@ module SystemRDL
           result.multiplier == multiplier && result.concatenation == expressions
       end
     end
+
+    def constant_cast(casting_type, expression)
+      lambda do |result|
+        result.is_a?(SystemRDL::Node::Cast) &&
+          result.casting_type == casting_type && result.expression == expression
+      end
+    end
   end
 end
