@@ -5,28 +5,28 @@ module SystemRDL
     def identifier(id)
       lambda do |result|
         result.is_a?(SystemRDL::Node::Identifier) &&
-          result.identifier == id
+          result == id
       end
     end
 
     def literal(type, value)
       lambda do |result|
         result.is_a?(SystemRDL::Node::Literal) &&
-          result.type == type && result.value == value
+          result.type == type && result == value
       end
     end
 
     def number_literal(value, width: nil)
       lambda do |result|
         result.is_a?(SystemRDL::Node::NumberLiteral) &&
-          result.value == value && result.width == width
+          result == [value, width]
       end
     end
 
     def enumerator_literal(type_name, mnemonic_name)
       lambda do |result|
         result.is_a?(SystemRDL::Node::EnumeratorLiteral) &&
-          result.type_name == type_name && result.mnemonic_name == mnemonic_name
+          result == [type_name, mnemonic_name]
       end
     end
 
@@ -51,14 +51,14 @@ module SystemRDL
     def multiple_concatenation(multiplier, expressions)
       lambda do |result|
         result.is_a?(SystemRDL::Node::MultipleConcatenation) &&
-          result.multiplier == multiplier && result.concatenation == expressions
+          result == [multiplier, expressions]
       end
     end
 
     def constant_cast(casting_type, expression)
       lambda do |result|
         result.is_a?(SystemRDL::Node::Cast) &&
-          result.casting_type == casting_type && result.expression == expression
+          result == [casting_type, expression]
       end
     end
   end

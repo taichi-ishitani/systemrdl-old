@@ -12,9 +12,16 @@ module SystemRDL
 
       def ==(other)
         case other
-        when NumberLiteral then super && width == other.width
+        when NumberLiteral then match?(other.value, other.width)
+        when Array then match?(*other)
         else super
         end
+      end
+
+      private
+
+      def match?(value, width)
+        self.value == value && self.width == width
       end
     end
   end
