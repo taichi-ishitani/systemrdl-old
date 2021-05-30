@@ -61,5 +61,19 @@ module SystemRDL
           result == [casting_type, expression]
       end
     end
+
+    def instance_ref(*ref_elements)
+      lambda do |result|
+        result.is_a?(SystemRDL::Node::InstanceRef) &&
+          result == ref_elements
+      end
+    end
+
+    def property_ref(*instance_ref, property)
+      lambda do |result|
+        result.is_a?(SystemRDL::Node::PropertyRef) &&
+          result == [*instance_ref, property]
+      end
+    end
   end
 end

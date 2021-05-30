@@ -6,7 +6,7 @@ module SystemRDL
       'longint', 'bit', 'boolean'
     ].each do |type|
       parse_rule("#{type}_type".to_sym) do
-        str(type).as(:type_keyword)
+        keyword(type).as(:type_keyword)
       end
     end
 

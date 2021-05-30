@@ -31,7 +31,8 @@ module SystemRDL
       [
         constant_literal, expression_with_parenthesis,
         constant_concatenation, constant_multiple_concatenation,
-        struct_literal, array_literal, type_based_constant_cast
+        array_literal, struct_literal, type_based_constant_cast,
+        property_ref, instance_ref
       ].inject(:|)
     end
 

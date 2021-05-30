@@ -11,5 +11,9 @@ module SystemRDL
       rule = str(c)
       ignore && rule.ignore || rule
     end
+
+    parse_helper(:keyword) do |word|
+      str(word) >> match('[_a-zA-Z0-9]').absent?
+    end
   end
 end

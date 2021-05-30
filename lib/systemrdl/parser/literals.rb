@@ -18,7 +18,7 @@ module SystemRDL
     parse_rule(:simple_literal) do
       SIMPLE_LITERALS
         .keys.sort.reverse
-        .map { |literal| str(literal).as(:simple_literal) }
+        .map { |literal| keyword(literal).as(:simple_literal) }
         .inject(:|)
     end
 
